@@ -26,6 +26,7 @@ public class UserRequestDto {
     }
 
     public User toEntity() {
+
         return User.builder()
             .email(email)
             .password(PasswordEncryptor.encrypt(password))

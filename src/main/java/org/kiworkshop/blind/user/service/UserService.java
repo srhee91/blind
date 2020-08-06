@@ -7,11 +7,15 @@ import org.kiworkshop.blind.user.controller.dto.UserResponseDto;
 import org.kiworkshop.blind.user.domain.User;
 import org.kiworkshop.blind.user.repository.UserRepository;
 import org.kiworkshop.blind.user.util.PasswordEncryptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,6 +28,10 @@ public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
     public Page<User> getUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
