@@ -7,8 +7,15 @@ import org.kiworkshop.blind.user.controller.dto.UserResponseDto;
 import org.kiworkshop.blind.user.domain.User;
 import org.kiworkshop.blind.user.repository.UserRepository;
 import org.kiworkshop.blind.user.util.PasswordEncryptor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,10 +24,14 @@ import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepository userRepository;
 
+    @Bean
+    public BCryptPasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
     public Page<User> getUsers(Pageable pageable) {
         return userRepository.findAll(pageable);
     }
@@ -81,7 +92,12 @@ public class UserService {
     }
 
     private User findByEmail(String email) {
-        return userRepository.findByEmail(email)
-            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 email입니다."));
+        return userRepository.findByEmail(email);
+            //.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 email입니다."));
+    }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+        return userRepository.findByEmail(email);
     }
 }
