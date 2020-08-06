@@ -3,8 +3,8 @@ POST localhost:8080/users
 Content-Type: application/json
 
 {
-  "email": "naruto@namutip.mauel",
-  "password": "naruto"
+  "email": "harris",
+  "password": "1234"
 }
 
 ###
