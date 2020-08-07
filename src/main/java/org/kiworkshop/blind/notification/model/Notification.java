@@ -48,4 +48,9 @@ public class Notification {
     public void readNotification() {
         read = true;
     }
+
+    public enum EventType {
+        POST_UPDATE,
+        COMMENT_CREATION;
+    }
 }
