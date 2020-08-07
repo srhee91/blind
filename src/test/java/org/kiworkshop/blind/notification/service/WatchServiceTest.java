@@ -1,5 +1,6 @@
 package org.kiworkshop.blind.notification.service;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.kiworkshop.blind.post.domain.PostTest.*;
 import static org.kiworkshop.blind.user.domain.UserTest.*;
@@ -7,6 +8,8 @@ import static org.mockito.BDDMockito.*;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+
+import javax.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -76,6 +79,25 @@ class WatchServiceTest {
 
         assertThatThrownBy(() -> watchService.cancelWatch(watch.getId(), null))
             .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void isWatching() {
+        Watch watch = getWatchFixture();
+        given(watchRepository.findByPostIdAndUserId(POST.getId(), USER.getId())).willReturn(Optional.of(watch));
+
+        Long watchId = watchService.isWatching(POST.getId(), USER.getId());
+
+        assertThat(watchId).isEqualTo(watch.getId());
+    }
+
+    @Test
+    void isNotWatching() {
+        given(watchRepository.findByPostIdAndUserId(POST.getId(), USER.getId())).willThrow(new EntityNotFoundException());
+
+        Long watchId = watchService.isWatching(POST.getId(), USER.getId());
+
+        assertThat(watchId).isEqualTo(0L);
     }
 
     public static Watch getWatchFixture() {

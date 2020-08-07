@@ -40,6 +40,15 @@ public class WatchService {
         watchRepository.deleteById(watchId);
     }
 
+    public Long isWatching(Long postId, Long userId) {
+        try {
+            Watch watch = findWatchByPostAndUser(postId, userId);
+            return watch.getId();
+        } catch (EntityNotFoundException e) {
+            return 0L;
+        }
+    }
+
     private Post findPostBy(Long postId) {
         return postRepository.findById(postId)
             .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 post입니다."));
@@ -52,6 +61,11 @@ public class WatchService {
 
     private Watch findWatchBy(Long watchId) {
         return watchRepository.findById(watchId)
+            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 watch입니다."));
+    }
+
+    private Watch findWatchByPostAndUser(Long postId, Long userId) {
+        return watchRepository.findByPostIdAndUserId(postId, userId)
             .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 watch입니다."));
     }
 }
