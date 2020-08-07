@@ -1,0 +1,73 @@
+package org.kiworkshop.blind.notification.service;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.kiworkshop.blind.notification.service.WatchServiceTest.*;
+import static org.mockito.BDDMockito.*;
+
+import java.time.LocalDateTime;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
+
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.kiworkshop.blind.notification.model.Notification;
+import org.kiworkshop.blind.notification.model.NotificationRepository;
+import org.kiworkshop.blind.notification.model.Watch;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
+
+@ExtendWith(MockitoExtension.class)
+class NotificationServiceTest {
+    private NotificationService notificationService;
+    @Mock
+    private NotificationRepository notificationRepository;
+
+    @BeforeEach
+    void setUp() {
+        notificationService = new NotificationService(notificationRepository);
+    }
+
+    @Test
+    void createNotification() {
+        List<Watch> watches = Collections.singletonList(getWatchFixture());
+
+        notificationService.createNotification(watches, Notification.EventType.POST_UPDATE);
+
+        verify(notificationRepository).saveAll(anyList());
+    }
+
+    @Test
+    void readNotification() {
+        Notification notification = getNotificationFixture();
+        given(notificationRepository.findById(anyLong())).willReturn(Optional.of(notification));
+
+        notificationService.readNotification(notification.getId(), notification.getUserId());
+
+        assertThat(notification.isRead()).isTrue();
+    }
+
+    @Test
+    void readNotificationException() {
+        Notification notification = getNotificationFixture();
+        given(notificationRepository.findById(anyLong())).willReturn(Optional.of(notification));
+
+        assertThatThrownBy(() -> notificationService.readNotification(notification.getId(), null))
+            .isInstanceOf(IllegalStateException.class);
+    }
+
+    public static Notification getNotificationFixture() {
+        Notification notification = Notification.builder()
+            .postId(1L)
+            .userId(1L)
+            .message("새로운 댓글이 생성되었습니다.")
+            .build();
+        ReflectionTestUtils.setField(notification, "id", 1L);
+        ReflectionTestUtils.setField(notification, "createdAt", LocalDateTime.now());
+        ReflectionTestUtils.setField(notification, "updatedAt", LocalDateTime.now());
+        return notification;
+    }
+}

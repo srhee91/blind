@@ -28,6 +28,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 class WatchServiceTest {
     private static final Post POST = getPostFixture();
     private static final User USER = getWatcherFixture();
+    private static final Watch WATCH = getWatchFixture();
     private WatchService watchService;
     @Mock
     private PostRepository postRepository;
@@ -46,6 +47,7 @@ class WatchServiceTest {
         given(postRepository.findById(anyLong())).willReturn(Optional.of(POST));
         given(userRepository.findById(anyLong())).willReturn(Optional.of(USER));
         given(watchRepository.existsByPostAndUser(POST, USER)).willReturn(false);
+        given(watchRepository.save(any(Watch.class))).willReturn(WATCH);
 
         watchService.watch(POST.getId(), USER.getId());
 
@@ -64,20 +66,18 @@ class WatchServiceTest {
 
     @Test
     void cancelWatch() {
-        Watch watch = getWatchFixture();
-        given(watchRepository.findById(anyLong())).willReturn(Optional.of(watch));
+        given(watchRepository.findById(anyLong())).willReturn(Optional.of(WATCH));
 
-        watchService.cancelWatch(watch.getId(), watch.getUser().getId());
+        watchService.cancelWatch(WATCH.getId(), WATCH.getUser().getId());
 
-        verify(watchRepository).deleteById(watch.getId());
+        verify(watchRepository).deleteById(WATCH.getId());
     }
 
     @Test
     void cancelWatchException() {
-        Watch watch = getWatchFixture();
-        given(watchRepository.findById(anyLong())).willReturn(Optional.of(watch));
+        given(watchRepository.findById(anyLong())).willReturn(Optional.of(WATCH));
 
-        assertThatThrownBy(() -> watchService.cancelWatch(watch.getId(), null))
+        assertThatThrownBy(() -> watchService.cancelWatch(WATCH.getId(), null))
             .isInstanceOf(IllegalStateException.class);
     }
 

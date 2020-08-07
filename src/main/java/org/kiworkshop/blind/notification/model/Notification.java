@@ -49,6 +49,10 @@ public class Notification {
         read = true;
     }
 
+    public boolean isOwner(Long userId) {
+        return this.userId.equals(userId);
+    }
+
     public enum EventType {
         POST_UPDATE,
         COMMENT_CREATION;
