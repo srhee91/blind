@@ -1,6 +1,5 @@
 package org.kiworkshop.blind.post.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.kiworkshop.blind.user.domain.UserTest.*;
 
 import org.kiworkshop.blind.user.domain.User;

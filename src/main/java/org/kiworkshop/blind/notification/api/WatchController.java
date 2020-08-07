@@ -1,8 +1,11 @@
 package org.kiworkshop.blind.notification.api;
 
 import java.net.URI;
+import java.util.List;
 
 import org.kiworkshop.blind.notification.service.WatchService;
+import org.kiworkshop.blind.post.controller.dto.response.PostSummaryResponsDto;
+import org.kiworkshop.blind.user.controller.dto.UserSummaryResponseDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -38,5 +41,17 @@ public class WatchController {
     public ResponseEntity<Void> stopWatch(@PathVariable("watchId") Long watchId, @RequestParam Long userId) {
         watchService.cancelWatch(watchId, userId);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/postlist")
+    public ResponseEntity<List<PostSummaryResponsDto>> fetchWatchingList(@RequestParam Long userId) {
+        List<PostSummaryResponsDto> posts = watchService.getWatchList(userId);
+        return ResponseEntity.ok(posts);
+    }
+
+    @GetMapping("/userlist")
+    public ResponseEntity<List<UserSummaryResponseDto>> fetchWatcherList(@RequestParam Long postId) {
+        List<UserSummaryResponseDto> users = watchService.getWatchers(postId);
+        return ResponseEntity.ok(users);
     }
 }

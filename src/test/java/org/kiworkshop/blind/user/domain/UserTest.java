@@ -1,7 +1,5 @@
 package org.kiworkshop.blind.user.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-
 import org.springframework.test.util.ReflectionTestUtils;
 
 public class UserTest {
