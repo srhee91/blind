@@ -32,6 +32,14 @@ public class NotificationService {
         notification.readNotification();
     }
 
+    public void deleteNotification(Long notificationId, Long userId) {
+        Notification notification = findNotificationBy(notificationId);
+        if (!notification.isOwner(userId)) {
+            throw new IllegalStateException("해당 유저의 알림이 아닙니다.");
+        }
+        notificationRepository.deleteById(notificationId);
+    }
+
     private Notification findNotificationBy(Long notificationId) {
         return notificationRepository.findById(notificationId)
             .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 알림입니다."));

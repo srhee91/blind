@@ -22,6 +22,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 @ExtendWith(MockitoExtension.class)
 class NotificationServiceTest {
+    private static final Notification NOTIFICATION = getNotificationFixture();
     private NotificationService notificationService;
     @Mock
     private NotificationRepository notificationRepository;
@@ -42,20 +43,35 @@ class NotificationServiceTest {
 
     @Test
     void readNotification() {
-        Notification notification = getNotificationFixture();
-        given(notificationRepository.findById(anyLong())).willReturn(Optional.of(notification));
+        given(notificationRepository.findById(anyLong())).willReturn(Optional.of(NOTIFICATION));
 
-        notificationService.readNotification(notification.getId(), notification.getUserId());
+        notificationService.readNotification(NOTIFICATION.getId(), NOTIFICATION.getUserId());
 
-        assertThat(notification.isRead()).isTrue();
+        assertThat(NOTIFICATION.isRead()).isTrue();
     }
 
     @Test
     void readNotificationException() {
-        Notification notification = getNotificationFixture();
-        given(notificationRepository.findById(anyLong())).willReturn(Optional.of(notification));
+        given(notificationRepository.findById(anyLong())).willReturn(Optional.of(NOTIFICATION));
 
-        assertThatThrownBy(() -> notificationService.readNotification(notification.getId(), null))
+        assertThatThrownBy(() -> notificationService.readNotification(NOTIFICATION.getId(), null))
+            .isInstanceOf(IllegalStateException.class);
+    }
+
+    @Test
+    void deleteNotification() {
+        given(notificationRepository.findById(anyLong())).willReturn(Optional.of(NOTIFICATION));
+
+        notificationService.deleteNotification(NOTIFICATION.getId(), NOTIFICATION.getUserId());
+
+        verify(notificationRepository).deleteById(NOTIFICATION.getId());
+    }
+
+    @Test
+    void deleteNotificationException() {
+        given(notificationRepository.findById(anyLong())).willReturn(Optional.of(NOTIFICATION));
+
+        assertThatThrownBy(() -> notificationService.deleteNotification(NOTIFICATION.getId(), null))
             .isInstanceOf(IllegalStateException.class);
     }
 
