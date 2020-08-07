@@ -24,6 +24,11 @@ public class NotificationService {
         notificationRepository.saveAll(notifications);
     }
 
+    public List<Notification> getNotifications(Long userId) {
+        List<Notification> notifications = notificationRepository.findAllByUserIdOrderByIdDesc(userId);
+        return notifications;
+    }
+
     public void readNotification(Long notificationId, Long userId) {
         Notification notification = findNotificationBy(notificationId);
         if (!notification.isOwner(userId)) {

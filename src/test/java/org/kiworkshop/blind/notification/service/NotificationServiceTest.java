@@ -42,6 +42,24 @@ class NotificationServiceTest {
     }
 
     @Test
+    void findAllByUserId() {
+        given(notificationRepository.findAllByUserIdOrderByIdDesc(anyLong())).willReturn(Collections.singletonList(NOTIFICATION));
+
+        List<Notification> notifications = notificationService.getNotifications(NOTIFICATION.getUserId());
+
+        assertThat(notifications).size().isEqualTo(1);
+    }
+
+    @Test
+    void findAllByUserId2() {
+        given(notificationRepository.findAllByUserIdOrderByIdDesc(anyLong())).willReturn(Collections.EMPTY_LIST);
+
+        List<Notification> notifications = notificationService.getNotifications(NOTIFICATION.getUserId());
+
+        assertThat(notifications).size().isEqualTo(0);
+    }
+
+    @Test
     void readNotification() {
         given(notificationRepository.findById(anyLong())).willReturn(Optional.of(NOTIFICATION));
 
