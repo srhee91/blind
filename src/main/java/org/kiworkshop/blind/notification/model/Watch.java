@@ -25,6 +25,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 public class Watch {
+    private static final String NOTIFICATION_MESAGE_FORMAT = "%d번 게시물 '%s' 게시글%s";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -37,7 +38,6 @@ public class Watch {
     private Post post;
     @ManyToOne
     private User user;
-    public static final String NOTIFICATION_MESAGE_FORMAT = "%d번 게시물 '%s' 게시글%s";
 
     @Builder
     private Watch(Post post, User user) {
@@ -54,5 +54,9 @@ public class Watch {
             .userId(user.getId())
             .message(String.format(NOTIFICATION_MESAGE_FORMAT, postId, post.getTitleSummary(), "이 수정되었습니다."))
             .build();
+    }
+
+    public boolean isOwner(Long userId) {
+        return user.getId().equals(userId);
     }
 }

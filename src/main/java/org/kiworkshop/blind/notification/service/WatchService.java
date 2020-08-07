@@ -32,6 +32,14 @@ public class WatchService {
         return watchRepository.save(watch).getId();
     }
 
+    public void cancelWatch(Long watchId, Long userId) {
+        Watch watch = findWatchBy(watchId);
+        if (!watch.isOwner(userId)) {
+            throw new IllegalStateException("본인이 아닌 경우에 받아보기를 취소할 수 없습니다.");
+        }
+        watchRepository.deleteById(watchId);
+    }
+
     private Post findPostBy(Long postId) {
         return postRepository.findById(postId)
             .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 post입니다."));
@@ -40,5 +48,10 @@ public class WatchService {
     private User findUserBy(Long userId) {
         return userRepository.findById(userId)
             .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 user입니다."));
+    }
+
+    private Watch findWatchBy(Long watchId) {
+        return watchRepository.findById(watchId)
+            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 watch입니다."));
     }
 }
