@@ -54,5 +54,12 @@ public class Post {
     public void addLike(User user) {
         likes.add(new LikeAction(this, user));
     }
+
+    public String getTitleSummary() {
+        if (title.length() < 10) {
+            return title;
+        }
+        return title.substring(0, 10);
+    }
 }
 
