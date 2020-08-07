@@ -15,12 +15,13 @@ import org.kiworkshop.blind.post.domain.Post;
 import org.kiworkshop.blind.user.domain.User;
 import org.springframework.util.Assert;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Generated;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 @Entity
 public class Watch {
