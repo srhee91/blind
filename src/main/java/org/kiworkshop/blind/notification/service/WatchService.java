@@ -40,7 +40,7 @@ public class WatchService {
         watchRepository.deleteById(watchId);
     }
 
-    public Long isWatching(Long postId, Long userId) {
+    public Long getWatchId(Long postId, Long userId) {
         try {
             Watch watch = findWatchByPostAndUser(postId, userId);
             return watch.getId();

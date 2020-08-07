@@ -45,8 +45,7 @@ public class Notification {
         this.read = false;
     }
 
-    public
-    void readNotification() {
+    public void readNotification() {
         read = true;
     }
 }

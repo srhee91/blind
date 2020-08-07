@@ -86,7 +86,7 @@ class WatchServiceTest {
         Watch watch = getWatchFixture();
         given(watchRepository.findByPostIdAndUserId(POST.getId(), USER.getId())).willReturn(Optional.of(watch));
 
-        Long watchId = watchService.isWatching(POST.getId(), USER.getId());
+        Long watchId = watchService.getWatchId(POST.getId(), USER.getId());
 
         assertThat(watchId).isEqualTo(watch.getId());
     }
@@ -95,7 +95,7 @@ class WatchServiceTest {
     void isNotWatching() {
         given(watchRepository.findByPostIdAndUserId(POST.getId(), USER.getId())).willThrow(new EntityNotFoundException());
 
-        Long watchId = watchService.isWatching(POST.getId(), USER.getId());
+        Long watchId = watchService.getWatchId(POST.getId(), USER.getId());
 
         assertThat(watchId).isEqualTo(0L);
     }
