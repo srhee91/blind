@@ -53,7 +53,7 @@ class WatchServiceTest {
         given(watchRepository.existsByPostAndUser(POST, WATCHER)).willReturn(false);
         given(watchRepository.save(any(Watch.class))).willReturn(WATCH);
 
-        watchService.startWath(POST.getId(), WATCHER.getId());
+        watchService.startWatch(POST.getId(), WATCHER.getId());
 
         verify(watchRepository).save(any(Watch.class));
     }
@@ -64,7 +64,7 @@ class WatchServiceTest {
         given(userRepository.findById(anyLong())).willReturn(Optional.of(WATCHER));
         given(watchRepository.existsByPostAndUser(POST, WATCHER)).willReturn(true);
 
-        assertThatThrownBy(() -> watchService.startWath(POST.getId(), WATCHER.getId()))
+        assertThatThrownBy(() -> watchService.startWatch(POST.getId(), WATCHER.getId()))
             .isInstanceOf(IllegalStateException.class);
     }
 

@@ -3,15 +3,12 @@ package org.kiworkshop.blind.notification.model;
 import java.time.LocalDateTime;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.kiworkshop.blind.post.domain.Post;
@@ -27,7 +24,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 public class Watch {
-    private static final String NOTIFICATION_MESAGE_FORMAT = "%d번 게시물 '%s' 게시글%s";
+    private static final String NOTIFICATION_MESSAGE_FORMAT = "%d번 게시물 '%s' 게시글%s";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,11 +50,11 @@ public class Watch {
 
     public Notification createNotification(Notification.EventType event) {
         Long postId = post.getId();
-        String mesage = generateNotificationMessage(event, postId);
+        String message = generateNotificationMessage(event, postId);
         return Notification.builder()
             .postId(postId)
             .userId(user.getId())
-            .message(mesage)
+            .message(message)
             .build();
     }
 
@@ -77,6 +74,6 @@ public class Watch {
             default:
                 tailMessage = "에 새로운 이벤트가 발생했습니다";
         }
-        return String.format(NOTIFICATION_MESAGE_FORMAT, postId, post.getTitleSummary(), tailMessage);
+        return String.format(NOTIFICATION_MESSAGE_FORMAT, postId, post.getTitleSummary(), tailMessage);
     }
 }
