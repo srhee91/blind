@@ -18,7 +18,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.kiworkshop.blind.notification.model.Watch;
 import org.kiworkshop.blind.notification.model.WatchRepository;
-import org.kiworkshop.blind.post.controller.dto.response.PostSummaryResponsDto;
+import org.kiworkshop.blind.post.controller.dto.response.PostSummaryResponseDto;
 import org.kiworkshop.blind.post.domain.Post;
 import org.kiworkshop.blind.post.repository.PostRepository;
 import org.kiworkshop.blind.user.controller.dto.UserSummaryResponseDto;
@@ -109,7 +109,7 @@ class WatchServiceTest {
         List<Watch> watches = Collections.singletonList(WATCH);
         given(watchRepository.findAllByUserId(anyLong())).willReturn(watches);
 
-        List<PostSummaryResponsDto> posts = watchService.getWatchList(WATCHER.getId());
+        List<PostSummaryResponseDto> posts = watchService.getWatchList(WATCHER.getId());
 
         assertThat(posts).size().isEqualTo(1);
         assertThat(posts.get(0).getId()).isEqualTo(POST.getId());
