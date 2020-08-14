@@ -53,7 +53,7 @@ class WatchServiceTest {
         given(watchRepository.existsByPostAndUser(POST, WATCHER)).willReturn(false);
         given(watchRepository.save(any(Watch.class))).willReturn(WATCH);
 
-        watchService.watch(POST.getId(), WATCHER.getId());
+        watchService.startWath(POST.getId(), WATCHER.getId());
 
         verify(watchRepository).save(any(Watch.class));
     }
@@ -64,7 +64,7 @@ class WatchServiceTest {
         given(userRepository.findById(anyLong())).willReturn(Optional.of(WATCHER));
         given(watchRepository.existsByPostAndUser(POST, WATCHER)).willReturn(true);
 
-        assertThatThrownBy(() -> watchService.watch(POST.getId(), WATCHER.getId()))
+        assertThatThrownBy(() -> watchService.startWath(POST.getId(), WATCHER.getId()))
             .isInstanceOf(IllegalStateException.class);
     }
 
@@ -72,7 +72,7 @@ class WatchServiceTest {
     void cancelWatch() {
         given(watchRepository.findById(anyLong())).willReturn(Optional.of(WATCH));
 
-        watchService.cancelWatch(WATCH.getId(), WATCH.getUser().getId());
+        watchService.stopWatch(WATCH.getId(), WATCH.getUser().getId());
 
         verify(watchRepository).deleteById(WATCH.getId());
     }
@@ -81,7 +81,7 @@ class WatchServiceTest {
     void cancelWatchException() {
         given(watchRepository.findById(anyLong())).willReturn(Optional.of(WATCH));
 
-        assertThatThrownBy(() -> watchService.cancelWatch(WATCH.getId(), null))
+        assertThatThrownBy(() -> watchService.stopWatch(WATCH.getId(), null))
             .isInstanceOf(IllegalStateException.class);
     }
 
@@ -90,18 +90,18 @@ class WatchServiceTest {
         Watch watch = getWatchFixture();
         given(watchRepository.findByPostIdAndUserId(POST.getId(), WATCHER.getId())).willReturn(Optional.of(watch));
 
-        Long watchId = watchService.getWatchId(POST.getId(), WATCHER.getId());
+        Boolean isWatching = watchService.isWatching(POST.getId(), WATCHER.getId());
 
-        assertThat(watchId).isEqualTo(watch.getId());
+        assertThat(isWatching).isEqualTo(true);
     }
 
     @Test
     void isNotWatching() {
         given(watchRepository.findByPostIdAndUserId(POST.getId(), WATCHER.getId())).willThrow(new EntityNotFoundException());
 
-        Long watchId = watchService.getWatchId(POST.getId(), WATCHER.getId());
+        Boolean isWatching = watchService.isWatching(POST.getId(), WATCHER.getId());
 
-        assertThat(watchId).isEqualTo(0L);
+        assertThat(isWatching).isEqualTo(false);
     }
 
     @Test

@@ -13,7 +13,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 public class NotificationTest {
 
     @ParameterizedTest
-    @CsvSource(value = {"postId", "userId", "message"})
+    @CsvSource(value = {"postId", "userId", "message"}, delimiter = ':')
     void creationException(String field) {
         assertThatThrownBy(() ->
             Notification.builder()

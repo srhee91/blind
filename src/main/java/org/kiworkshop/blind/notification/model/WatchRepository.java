@@ -13,14 +13,17 @@ import org.springframework.data.repository.query.Param;
 public interface WatchRepository extends JpaRepository<Watch, Long> {
     boolean existsByPostAndUser(Post post, User user);
 
-    @Query(value = "SELECT * FROM watch w WHERE w.post = :postId AND w.user = :userId", nativeQuery = true)
+    @Query(value = "SELECT count(*) > 0 FROM Watch WHERE post_id = :postId AND user_id = :userId", nativeQuery = true)
+    boolean existsByPostIdAndUserId(@Param("postId") Long postId, @Param("userId") Long userId);
+
+    @Query(value = "SELECT * FROM Watch WHERE post_id = :postId AND user_id = :userId", nativeQuery = true)
     Optional<Watch> findByPostIdAndUserId(@Param("postId") Long postId, @Param("userId") Long userId);
 
     @EntityGraph(attributePaths = {"post", "post.author", "post.likes"})
-    @Query(value = "SELECT DISTINCT * FROM watch w WHERE w.user = :userId", nativeQuery = true)
+    @Query(value = "SELECT DISTINCT * FROM Watch WHERE user_id = :userId", nativeQuery = true)
     List<Watch> findAllByUserId(@Param("userId") Long userId);
 
     @EntityGraph(attributePaths = {"user"})
-    @Query(value = "SELECT DISTINCT * FROM watch w WHERE w.post = :postId", nativeQuery = true)
-    List<Watch> findAllByPostId(Long postId);
+    @Query(value = "SELECT DISTINCT * FROM Watch WHERE post_id = :postId", nativeQuery = true)
+    List<Watch> findAllByPostId(@Param("postId") Long postId);
 }

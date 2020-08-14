@@ -24,22 +24,22 @@ public class WatchController {
     private final WatchService watchService;
 
     @PostMapping
-    public ResponseEntity<Long> startWatch(@RequestParam Long postId, @RequestParam Long userId) {
-        Long watchId = watchService.watch(postId, userId);
+    public ResponseEntity<Void> startWatch(@RequestParam Long postId, @RequestParam Long userId) {
+        Long watchId = watchService.startWath(postId, userId);
         return ResponseEntity
             .created(URI.create("/api/watch/" + watchId))
-            .body(watchId);
+            .build();
     }
 
     @GetMapping
-    public ResponseEntity<Long> fetchWatchId(@RequestParam Long postId, @RequestParam Long userId) {
-        Long watchId = watchService.getWatchId(postId, userId);
-        return ResponseEntity.ok(watchId);
+    public ResponseEntity<Boolean> fetchWatchId(@RequestParam Long postId, @RequestParam Long userId) {
+        Boolean isWatching = watchService.isWatching(postId, userId);
+        return ResponseEntity.ok(isWatching);
     }
 
-    @DeleteMapping("/{watchId}")
-    public ResponseEntity<Void> stopWatch(@PathVariable("watchId") Long watchId, @RequestParam Long userId) {
-        watchService.cancelWatch(watchId, userId);
+    @DeleteMapping("/post/{postId}")
+    public ResponseEntity<Void> stopWatch(@PathVariable("postId") Long postId, @RequestParam Long userId) {
+        watchService.stopWatch(postId, userId);
         return ResponseEntity.noContent().build();
     }
 

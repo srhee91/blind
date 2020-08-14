@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import org.kiworkshop.blind.notification.exception.WatchException;
 import org.kiworkshop.blind.notification.model.Watch;
 import org.kiworkshop.blind.notification.model.WatchRepository;
 import org.kiworkshop.blind.post.controller.dto.response.PostSummaryResponsDto;
@@ -24,7 +25,7 @@ public class WatchService {
     private final UserRepository userRepository;
     private final WatchRepository watchRepository;
 
-    public Long watch(Long postId, Long userId) {
+    public Long startWath(Long postId, Long userId) {
         Post post = findPostBy(postId);
         User user = findUserBy(userId);
         if (watchRepository.existsByPostAndUser(post, user)) {
@@ -37,21 +38,16 @@ public class WatchService {
         return watchRepository.save(watch).getId();
     }
 
-    public void cancelWatch(Long watchId, Long userId) {
-        Watch watch = findWatchBy(watchId);
+    public void stopWatch(Long postId, Long userId) {
+        Watch watch = findWatchByPostIdAndUserId(postId, userId);
         if (!watch.isOwner(userId)) {
             throw new IllegalStateException("본인이 아닌 경우에 받아보기를 취소할 수 없습니다.");
         }
-        watchRepository.deleteById(watchId);
+        watchRepository.delete(watch);
     }
 
-    public Long getWatchId(Long postId, Long userId) {
-        try {
-            Watch watch = findWatchByPostAndUser(postId, userId);
-            return watch.getId();
-        } catch (EntityNotFoundException e) {
-            return 0L;
-        }
+    public Boolean isWatching(Long postId, Long userId) {
+        return watchRepository.existsByPostIdAndUserId(postId, userId);
     }
 
     public List<PostSummaryResponsDto> getWatchList(Long userId) {
@@ -80,13 +76,8 @@ public class WatchService {
             .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 user입니다."));
     }
 
-    private Watch findWatchBy(Long watchId) {
-        return watchRepository.findById(watchId)
-            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 watch입니다."));
-    }
-
-    private Watch findWatchByPostAndUser(Long postId, Long userId) {
+    private Watch findWatchByPostIdAndUserId(Long postId, Long userId) {
         return watchRepository.findByPostIdAndUserId(postId, userId)
-            .orElseThrow(() -> new EntityNotFoundException("존재하지 않는 watch입니다."));
+            .orElseThrow(() -> new WatchException("현재 받아보기 상태가 아닙니다."));
     }
 }
