@@ -25,7 +25,7 @@ public class WatchService {
     private final UserRepository userRepository;
     private final WatchRepository watchRepository;
 
-    public Long startWath(Long postId, Long userId) {
+    public Long startWatch(Long postId, Long userId) {
         Post post = findPostBy(postId);
         User user = findUserBy(userId);
         if (watchRepository.existsByPostAndUser(post, user)) {
