@@ -25,8 +25,7 @@ public class NotificationService {
     }
 
     public List<Notification> getNotifications(Long userId) {
-        List<Notification> notifications = notificationRepository.findAllByUserIdOrderByIdDesc(userId);
-        return notifications;
+        return notificationRepository.findAllByUserIdOrderByIdDesc(userId);
     }
 
     public void readNotification(Long notificationId, Long userId) {
