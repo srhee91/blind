@@ -27,7 +27,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Entity
 public class Watch {
-    private static final String NOTIFICATION_MESAGE_FORMAT = "%d번 게시물 '%s' 게시글%s";
+    private static final String NOTIFICATION_MESSAGE_FORMAT = "%d번 게시물 '%s' 게시글%s";
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -53,11 +53,11 @@ public class Watch {
 
     public Notification createNotification(Notification.EventType event) {
         Long postId = post.getId();
-        String mesage = generateNotificationMessage(event, postId);
+        String message = generateNotificationMessage(event, postId);
         return Notification.builder()
             .postId(postId)
             .userId(user.getId())
-            .message(mesage)
+            .message(message)
             .build();
     }
 
@@ -77,6 +77,6 @@ public class Watch {
             default:
                 tailMessage = "에 새로운 이벤트가 발생했습니다";
         }
-        return String.format(NOTIFICATION_MESAGE_FORMAT, postId, post.getTitleSummary(), tailMessage);
+        return String.format(NOTIFICATION_MESSAGE_FORMAT, postId, post.getTitleSummary(), tailMessage);
     }
 }
